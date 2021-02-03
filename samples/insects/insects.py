@@ -73,7 +73,7 @@ class InsectConfig(Config):
     NUM_CLASSES = 1 + 1  # Background + toy
 
     # Number of training steps per epoch
-    STEPS_PER_EPOCH = 1
+    STEPS_PER_EPOCH = 100
 
     # Skip detections with < 90% confidence
     DETECTION_MIN_CONFIDENCE = 0.9
@@ -84,7 +84,7 @@ class InsectConfig(Config):
     # Number of validation steps to run at the end of every training epoch.
     # A bigger number improves accuracy of validation stats, but slows
     # down the training.
-    VALIDATION_STEPS = 1
+    VALIDATION_STEPS = 10
 
     # Backbone network architecture
     # Supported values are: resnet50, resnet101.
@@ -402,7 +402,7 @@ def train(model):
     print("Training network heads")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=1,
+                epochs=10,
                 layers='heads')
 
 
