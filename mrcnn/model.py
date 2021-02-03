@@ -2363,6 +2363,7 @@ class MaskRCNN(object):
 
         self.keras_model.fit(
             train_generator,
+            verbose=1,
             initial_epoch=self.epoch,
             epochs=epochs,
             steps_per_epoch=self.config.STEPS_PER_EPOCH,
