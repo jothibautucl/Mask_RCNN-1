@@ -255,8 +255,8 @@ class InsectDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("abeille_mellifere", 1, "abeille_mellifere")
-        self.add_class("bourdon_des_arbres", 2, "bourdon_des_arbres")
+        self.add_class("insect", 1, "abeille_mellifere")
+        self.add_class("insect", 2, "bourdon_des_arbres")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
@@ -271,20 +271,22 @@ class InsectDataset(utils.Dataset):
             image = skimage.io.imread(image_path)
             height, width = image.shape[:2]
             self.add_image(
-                "abeille_mellifere",  ## for a single class just add the name here
+                "insect",  ## for a single class just add the name here
                 image_id=filename,  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height)
+                width=width, height=height,
+                num_id=1)
 
         for filename in bourdon_des_arbres_list:
             image_path = os.path.join(bourdon_des_arbres_dir, filename)
             image = skimage.io.imread(image_path)
             height, width = image.shape[:2]
             self.add_image(
-                "bourdon_des_arbres",  ## for a single class just add the name here
+                "insect",  ## for a single class just add the name here
                 image_id=filename,  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height)
+                width=width, height=height,
+                num_id=2)
 
 
         # Load annotations
@@ -358,17 +360,18 @@ class InsectDataset(utils.Dataset):
         info = self.image_info[image_id]
         if info["source"] != "insect":
             return super(self.__class__, self).load_mask(image_id)
-        num_ids = info['num_ids']
-        mask = np.zeros([info["height"], info["width"], len(info["polygons"])],
+        num_id = info['num_id']
+        mask = np.zeros([info["height"], info["width"], 1],
                         dtype=np.uint8)
-        for i, p in enumerate(info["polygons"]):
-            rr, cc = skimage.draw.polygon(p['all_points_y'], p['all_points_x'])
-            mask[rr, cc, i] = 1
+
+        # for i, p in enumerate(info["polygons"]):
+        #     rr, cc = skimage.draw.polygon(p['all_points_y'], p['all_points_x'])
+        #     mask[rr, cc, i] = 1
 
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID only, we return an array of 1s
         # Map class names to class IDs.
-        num_ids = np.array(num_ids, dtype=np.int32)
+        num_ids = np.array([num_id], dtype=np.int32)
         return mask, num_ids
 
     def image_reference(self, image_id):
