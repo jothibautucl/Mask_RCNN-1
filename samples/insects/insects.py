@@ -255,8 +255,8 @@ class InsectDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("abeille_mellifere", 1, "abeille_mellifere")
-        self.add_class("bourdon_des_arbres", 2, "bourdon_des_arbres")
+        self.add_class("insects", 1, "abeille_mellifere")
+        self.add_class("insects", 2, "bourdon_des_arbres")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
@@ -271,20 +271,20 @@ class InsectDataset(utils.Dataset):
             image = skimage.io.imread(image_path)
             height, width = image.shape[:2]
             self.add_image(
-                "abeille_mellifere",  ## for a single class just add the name here
+                "insects",  ## for a single class just add the name here
                 image_id=filename,  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height)
+                width=width, height=height, numid=1)
 
         for filename in bourdon_des_arbres_list:
             image_path = os.path.join(bourdon_des_arbres_dir, filename)
             image = skimage.io.imread(image_path)
             height, width = image.shape[:2]
             self.add_image(
-                "bourdon_des_arbres",  ## for a single class just add the name here
+                "insects",  ## for a single class just add the name here
                 image_id=filename,  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height)
+                width=width, height=height, numid=2)
 
 
         # Load annotations
