@@ -38,10 +38,6 @@ class ParallelModel(KM.Model):
         super(ParallelModel, self).__init__(inputs=self.inner_model.inputs,
                                             outputs=merged_outputs)
 
-    def get_config(self):
-        cfg = super().get_config()
-        return cfg  
-
     def __getattribute__(self, attrname):
         """Redirect loading and saving methods to the inner model. That's where
         the weights are stored."""
