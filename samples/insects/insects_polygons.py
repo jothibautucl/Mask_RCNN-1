@@ -63,7 +63,7 @@ class BalloonConfig(Config):
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 1 #au moins 2
 
     # Number of classes (including background)
     NUM_CLASSES = 1 + 1  # Background + balloon
@@ -73,6 +73,8 @@ class BalloonConfig(Config):
 
     # Skip detections with < 90% confidence
     DETECTION_MIN_CONFIDENCE = 0.9
+
+    BACKBONE = "resnet101" #tester resnet50
 
 
 ############################################################
@@ -87,11 +89,12 @@ class BalloonDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("balloon", 1, "balloon")
+        self.add_class("insect", 1, "bourdon_des_arbres")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
         dataset_dir = os.path.join(dataset_dir, subset)
+        dataset_dir = os.path.join(dataset_dir, "bourdon_des_arbres")
 
         # Load annotations
         # VGG Image Annotator (up to version 1.6) saves each image in the form:
@@ -135,7 +138,7 @@ class BalloonDataset(utils.Dataset):
             height, width = image.shape[:2]
 
             self.add_image(
-                "balloon",
+                "insect",
                 image_id=a['filename'],  # use file name as a unique image id
                 path=image_path,
                 width=width, height=height,
@@ -150,7 +153,7 @@ class BalloonDataset(utils.Dataset):
         """
         # If not a balloon dataset image, delegate to parent class.
         image_info = self.image_info[image_id]
-        if image_info["source"] != "balloon":
+        if image_info["source"] != "insect":
             return super(self.__class__, self).load_mask(image_id)
 
         # Convert polygons to a bitmap mask of shape
@@ -174,7 +177,7 @@ class BalloonDataset(utils.Dataset):
     def image_reference(self, image_id):
         """Return the path of the image."""
         info = self.image_info[image_id]
-        if info["source"] == "balloon":
+        if info["source"] == "insect":
             return info["path"]
         else:
             super(self.__class__, self).image_reference(image_id)
