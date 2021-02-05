@@ -66,7 +66,7 @@ class InsectPolygonsConfig(Config):
     IMAGES_PER_GPU = 2 #au moins 2
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 1  # Background + balloon
+    NUM_CLASSES = 1 + 2  # Background + bourdon + abeille
 
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 100
@@ -89,12 +89,17 @@ class InsectPolygonsDataset(utils.Dataset):
         subset: Subset to load: train or val
         """
         # Add classes. We have only one class to add.
-        self.add_class("insect", 1, "bourdon_des_arbres")
+        class_id_bourdon = 1
+        class_id_abeille = 2
+
+        self.add_class("insect", class_id_bourdon, "bourdon_des_arbres")
+        self.add_class("insect", class_id_abeille, "abeille_mellifere")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
         dataset_dir = os.path.join(dataset_dir, subset)
-        dataset_dir = os.path.join(dataset_dir, "bourdon_des_arbres")
+        dataset_dir_bourdon = os.path.join(dataset_dir, "bourdon_des_arbres")
+        dataset_dir_abeille = os.path.join(dataset_dir, "abeille_mellifere")
 
         # Load annotations
         # VGG Image Annotator (up to version 1.6) saves each image in the form:
@@ -112,15 +117,18 @@ class InsectPolygonsDataset(utils.Dataset):
         # }
         # We mostly care about the x and y coordinates of each region
         # Note: In VIA 2.0, regions was changed from a dict to a list.
-        annotations = json.load(open(os.path.join(dataset_dir, "via_region_data.json")))
-        annotations = list(annotations.values())  # don't need the dict keys
+        annotations_bourdon = json.load(open(os.path.join(dataset_dir_bourdon, "via_region_data.json")))
+        annotations_abeille = json.load(open(os.path.join(dataset_dir_abeille, "via_region_data.json")))
+        annotations_bourdon = list(annotations_bourdon.values())  # don't need the dict keys
+        annotations_abeille = list(annotations_abeille.values())  # don't need the dict keys
 
         # The VIA tool saves images in the JSON even if they don't have any
         # annotations. Skip unannotated images.
-        annotations = [a for a in annotations if a['regions']]
+        annotations_bourdon = [a for a in annotations_bourdon if a['regions']]
+        annotations_abeille = [a for a in annotations_abeille if a['regions']]
 
         # Add images
-        for a in annotations:
+        for a in annotations_bourdon:
             # Get the x, y coordinaets of points of the polygons that make up
             # the outline of each object instance. These are stores in the
             # shape_attributes (see json format above)
@@ -133,7 +141,7 @@ class InsectPolygonsDataset(utils.Dataset):
             # load_mask() needs the image size to convert polygons to masks.
             # Unfortunately, VIA doesn't include it in JSON, so we must read
             # the image. This is only managable since the dataset is tiny.
-            image_path = os.path.join(dataset_dir, a['filename'])
+            image_path = os.path.join(dataset_dir_bourdon, a['filename'])
             image = skimage.io.imread(image_path, plugin='pil')
             height, width = image.shape[:2]
 
@@ -141,7 +149,31 @@ class InsectPolygonsDataset(utils.Dataset):
                 "insect",
                 image_id=a['filename'],  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height,
+                width=width, height=height, class_id=np.ones(len(polygons)*class_id_bourdon),
+                polygons=polygons)
+                
+        for a in annotations_bourdon:
+            # Get the x, y coordinaets of points of the polygons that make up
+            # the outline of each object instance. These are stores in the
+            # shape_attributes (see json format above)
+            # The if condition is needed to support VIA versions 1.x and 2.x.
+            if type(a['regions']) is dict:
+                polygons = [r['shape_attributes'] for r in a['regions'].values()]
+            else:
+                polygons = [r['shape_attributes'] for r in a['regions']] 
+
+            # load_mask() needs the image size to convert polygons to masks.
+            # Unfortunately, VIA doesn't include it in JSON, so we must read
+            # the image. This is only managable since the dataset is tiny.
+            image_path = os.path.join(dataset_dir_abeille, a['filename'])
+            image = skimage.io.imread(image_path, plugin='pil')
+            height, width = image.shape[:2]
+
+            self.add_image(
+                "insect",
+                image_id=a['filename'],  # use file name as a unique image id
+                path=image_path,
+                width=width, height=height, class_id=np.ones(len(polygons)*class_id_abeille),
                 polygons=polygons)
 
     def load_mask(self, image_id):
@@ -159,6 +191,7 @@ class InsectPolygonsDataset(utils.Dataset):
         # Convert polygons to a bitmap mask of shape
         # [height, width, instance_count]
         info = self.image_info[image_id]
+        class_ids = info['class_ids']
         mask = np.zeros([info["height"], info["width"], len(info["polygons"])],
                         dtype=np.uint8)
         for i, p in enumerate(info["polygons"]):
@@ -170,9 +203,9 @@ class InsectPolygonsDataset(utils.Dataset):
 
             mask[rr, cc, i] = 1
 
-        # Return mask, and array of class IDs of each instance. Since we have
-        # one class ID only, we return an array of 1s
-        return mask.astype(np.bool), np.ones([mask.shape[-1]], dtype=np.int32)
+        # Return mask, and array of class IDs of each instance.
+        class_ids = np.array(class_ids, dtype=np.int32)
+        return mask.astype(np.bool), class_ids
 
     def image_reference(self, image_id):
         """Return the path of the image."""
