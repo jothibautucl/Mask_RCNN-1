@@ -149,10 +149,10 @@ class InsectPolygonsDataset(utils.Dataset):
                 "insect",
                 image_id=a['filename'],  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height, class_id=np.ones(len(polygons)*class_id_bourdon),
+                width=width, height=height, class_id=class_id_bourdon,
                 polygons=polygons)
                 
-        for a in annotations_bourdon:
+        for a in annotations_abeille:
             # Get the x, y coordinaets of points of the polygons that make up
             # the outline of each object instance. These are stores in the
             # shape_attributes (see json format above)
@@ -173,7 +173,7 @@ class InsectPolygonsDataset(utils.Dataset):
                 "insect",
                 image_id=a['filename'],  # use file name as a unique image id
                 path=image_path,
-                width=width, height=height, class_id=np.ones(len(polygons)*class_id_abeille),
+                width=width, height=height, class_id=class_id_abeille,
                 polygons=polygons)
 
     def load_mask(self, image_id):
@@ -191,7 +191,7 @@ class InsectPolygonsDataset(utils.Dataset):
         # Convert polygons to a bitmap mask of shape
         # [height, width, instance_count]
         info = self.image_info[image_id]
-        class_ids = info['class_ids']
+        class_id = info['class_id']
         mask = np.zeros([info["height"], info["width"], len(info["polygons"])],
                         dtype=np.uint8)
         for i, p in enumerate(info["polygons"]):
@@ -204,8 +204,7 @@ class InsectPolygonsDataset(utils.Dataset):
             mask[rr, cc, i] = 1
 
         # Return mask, and array of class IDs of each instance.
-        class_ids = np.array(class_ids, dtype=np.int32)
-        return mask.astype(np.bool), class_ids
+        return mask.astype(np.bool), np.ones([mask.shape[-1]], dtype=np.int32)*class_id
 
     def image_reference(self, image_id):
         """Return the path of the image."""
