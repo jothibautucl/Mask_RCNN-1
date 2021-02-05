@@ -5,6 +5,7 @@ import math
 import re
 import time
 import numpy as np
+import skimage
 import tensorflow as tf
 import matplotlib
 import matplotlib.pyplot as plt
@@ -21,7 +22,7 @@ from mrcnn.visualize import display_images
 import mrcnn.model as modellib
 from mrcnn.model import log
 
-import insects
+import insects_polygons as ip
 
 #%matplotlib inline
 
@@ -31,10 +32,10 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-BALLON_WEIGHTS_PATH = "../../mask_rcnn_balloon.h5"  # TODO: update this path
+BALLON_WEIGHTS_PATH = "../../logs/balloon20210204T1851/mask_rcnn_balloon_0030.h5"  # TODO: update this path
 
-config = insects.InsectConfig()
-INSECT_DIR = os.path.join(ROOT_DIR, "dataset")
+config = ip.InsectPolygonsConfig()
+INSECT_DIR = os.path.join(ROOT_DIR, "dataset_25")
 
 
 # changes for inferencing.
@@ -71,7 +72,7 @@ def get_ax(rows=1, cols=1, size=16):
 
 if __name__ == '__main__':
     # Load validation dataset
-    dataset = insects.InsectDataset()
+    dataset = ip.InsectPolygonsDataset()
     dataset.load_insect(INSECT_DIR, "val")
 
     # Must call before using the dataset
@@ -93,23 +94,33 @@ if __name__ == '__main__':
     '''
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
     '''
+    #
+    # import matplotlib.image as mpimg
+    #
+    # image1 = mpimg.imread('/home/jonathan/Desktop/Master_Thesis/Mask_RCNN-1/dataset_25/val/bourdon_des_arbres/bourdon_des_arbres0025.jpg')
+    # # Run object detection
+    # print(len([image1]))
+    # results1 = model.detect([image1], verbose=1)
+    #
+    # # Display results
+    # ax = get_ax(1)
+    # r1 = results1[0]
+    # visualize.display_instances(image1, r1['rois'], r1['masks'], r1['class_ids'],
+    #                             dataset.class_names, r1['scores'], ax=ax,
+    #                             title="Predictions1")
 
-    image_id = random.choice(dataset.image_ids)
-    image, image_meta, gt_class_id, gt_bbox, gt_mask = \
-        modellib.load_image_gt(dataset, config, image_id, use_mini_mask=False)
-    info = dataset.image_info[image_id]
-    print("image ID: {}.{} ({}) {}".format(info["source"], info["id"], image_id,
-                                           dataset.image_reference(image_id)))
+    class_names = ['BG', 'boudon_des_arbres']
 
-    # Run object detection
+    # Load a random image from the images folder
+    image = skimage.io.imread('../../dataset_25/val/bourdon_des_arbres/bourdon_des_arbres0027.jpg')
+    # image = skimage.io.imread('../../dataset/train/abeille_mellifere/abeille_mellifère0101.jpg')
+    # image = skimage.io.imread('~/Desktop/122504389_2752371608336477_1403272794490783653_n.jpg')
+
+    # Run detection
     results = model.detect([image], verbose=1)
 
-    # Display results
-    ax = get_ax(1)
+    # Visualize results
+    filename = 'test.jpg'
     r = results[0]
-    visualize.display_instances(image, r['rois'], r['masks'], r['class_ids'],
-                                dataset.class_names, r['scores'], ax=ax,
-                                title="Predictions")
-    log("gt_class_id", gt_class_id)
-    log("gt_bbox", gt_bbox)
-    log("gt_mask", gt_mask)
+    visualize.save_instances(image, r['rois'], r['masks'], r['class_ids'],
+                                class_names, filename, r['scores'])
