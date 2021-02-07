@@ -122,7 +122,9 @@ if __name__ == '__main__':
     # Load a random image from the images folder
     images = []
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i)))
+        path = os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i))
+        print(path)
+        images[i] = skimage.io.imread(path)
 
     for i in range(0, number_files):
         images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(START_BOURDON_DES_ARBRES+i)))
