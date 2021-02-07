@@ -130,7 +130,7 @@ if __name__ == '__main__':
     # Run detection
     # Visualize results
     filename = 'test{:04}.jpg'
-    for i in range(0, number_files):
+    for i in range(0, len(images)):
         results = model.detect([images[i]], verbose=1)
         r = results[0]
         visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
