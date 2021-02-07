@@ -75,14 +75,14 @@ def get_ax(rows=1, cols=1, size=16):
 
 if __name__ == '__main__':
     # Load validation dataset
-    dataset = ip.InsectPolygonsDataset()
-    dataset.load_insect(INSECT_DIR, "predict")
-
-    # Must call before using the dataset
-    dataset.prepare()
-
-    print("Images: {}\nClasses: {}".format(len(dataset.image_ids), dataset.class_names))
-
+    # dataset = ip.InsectPolygonsDataset()
+    # dataset.load_insect(INSECT_DIR, "predict")
+    #
+    # # Must call before using the dataset
+    # dataset.prepare()
+    #
+    # print("Images: {}\nClasses: {}".format(len(dataset.image_ids), dataset.class_names))
+    #
     with tf.device(DEVICE):
         model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR,
                                   config=config)
