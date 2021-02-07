@@ -118,10 +118,10 @@ if __name__ == '__main__':
     # Load a random image from the images folder
     images = []
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(i)))
+        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(number_files+i)))
 
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(i)))
+        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(number_files+i)))
 
     # Run detection
     results = model.detect(images, verbose=1)
@@ -131,4 +131,4 @@ if __name__ == '__main__':
     for i in range(0, number_files):
         r = results[i]
         visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
-                                 class_names, filename.format(i), r['scores'])
+                                 class_names, filename.format(number_files+i), r['scores'])
