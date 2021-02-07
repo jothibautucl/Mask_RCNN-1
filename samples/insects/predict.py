@@ -24,7 +24,7 @@ from mrcnn.model import log
 
 import insects_polygons as ip
 
-#%matplotlib inline
+# %matplotlib inline
 
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
@@ -32,10 +32,12 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-BALLON_WEIGHTS_PATH = "../../logs/balloon20210204T1851/mask_rcnn_balloon_0030.h5"  # TODO: update this path
+BALLON_WEIGHTS_PATH = "../../logs/balloon20210205T1601/mask_rcnn_balloon_0009.h5"  # TODO: update this path
 
 config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_25")
+ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "predict/abeille_mellifere")
+BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "predict/bourdon_des_arbres")
 
 
 # changes for inferencing.
@@ -59,6 +61,7 @@ DEVICE = "/gpu:0"  # /cpu:0 or /gpu:0
 # TODO: code for 'training' test mode not ready yet
 TEST_MODE = "inference"
 
+
 def get_ax(rows=1, cols=1, size=16):
     """Return a Matplotlib Axes array to be used in
     all visualizations in the notebook. Provide a
@@ -73,7 +76,7 @@ def get_ax(rows=1, cols=1, size=16):
 if __name__ == '__main__':
     # Load validation dataset
     dataset = ip.InsectPolygonsDataset()
-    dataset.load_insect(INSECT_DIR, "val")
+    dataset.load_insect(INSECT_DIR, "predict")
 
     # Must call before using the dataset
     dataset.prepare()
@@ -89,7 +92,6 @@ if __name__ == '__main__':
     # Load weights
     print("Loading weights ", weights_path)
     model.load_weights(weights_path, by_name=True)
-
 
     '''
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
@@ -109,18 +111,24 @@ if __name__ == '__main__':
     #                             dataset.class_names, r1['scores'], ax=ax,
     #                             title="Predictions1")
 
-    class_names = ['BG', 'boudon_des_arbres']
+    class_names = ['BG', 'boudon_des_arbres', 'abeille_mellifere']
+    number_files = len(os.listdir(ABEILLE_MELLIFERE_DIR))
+    assert number_files == len(os.listdir(BOURDON_DES_ARBRES_DIR))
 
     # Load a random image from the images folder
-    image = skimage.io.imread('../../dataset_25/val/bourdon_des_arbres/bourdon_des_arbres0027.jpg')
-    # image = skimage.io.imread('../../dataset/train/abeille_mellifere/abeille_mellifère0101.jpg')
-    # image = skimage.io.imread('~/Desktop/122504389_2752371608336477_1403272794490783653_n.jpg')
+    images = []
+    for i in range(0, number_files):
+        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(i)))
+
+    for i in range(0, number_files):
+        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(i)))
 
     # Run detection
-    results = model.detect([image], verbose=1)
+    results = model.detect(images, verbose=1)
 
     # Visualize results
-    filename = 'test.jpg'
-    r = results[0]
-    visualize.save_instances(image, r['rois'], r['masks'], r['class_ids'],
-                                class_names, filename, r['scores'])
+    filename = 'test{:04}.jpg'
+    for i in range(0, number_files):
+        r = results[i]
+        visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
+                                 class_names, filename.format(i), r['scores'])
