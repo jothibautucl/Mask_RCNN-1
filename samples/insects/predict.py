@@ -32,7 +32,7 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-BALLON_WEIGHTS_PATH = "../../logs/balloon20210205T1601/mask_rcnn_balloon_0009.h5"  # TODO: update this path
+WEIGHTS_PATH = "../../logs/balloon20210205T1601/mask_rcnn_balloon_0009.h5"  # TODO: update this path
 
 config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_25")
@@ -87,7 +87,7 @@ if __name__ == '__main__':
         model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR,
                                   config=config)
 
-    weights_path = model.find_last()
+    weights_path = WEIGHTS_PATH
 
     # Load weights
     print("Loading weights ", weights_path)
@@ -122,19 +122,16 @@ if __name__ == '__main__':
     # Load a random image from the images folder
     images = []
     for i in range(0, number_files):
-        path = os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i))
-        print(path)
-        images[i] = skimage.io.imread(path)
+        images.insert(len(images)-1, skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i))))
 
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(START_BOURDON_DES_ARBRES+i)))
+        images.insert(len(images)-1, skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(START_BOURDON_DES_ARBRES+i))))
 
     # Run detection
-    results = model.detect(images, verbose=1)
-
     # Visualize results
     filename = 'test{:04}.jpg'
     for i in range(0, number_files):
-        r = results[i]
+        results = model.detect([images[i]], verbose=1)
+        r = results[0]
         visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
                                  class_names, filename.format(i), r['scores'])
