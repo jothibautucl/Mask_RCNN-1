@@ -113,15 +113,17 @@ if __name__ == '__main__':
 
     class_names = ['BG', 'boudon_des_arbres', 'abeille_mellifere']
     number_files = len(os.listdir(ABEILLE_MELLIFERE_DIR))
+    START_ABEILLE_MELLIFERE = [int(s) for s in os.listdir(ABEILLE_MELLIFERE_DIR)[0].split() if s.isdigit()][-1]
+    START_BOURDON_DES_ARBRES = [int(s) for s in os.listdir(BOURDON_DES_ARBRES_DIR)[0].split() if s.isdigit()][-1]
     assert number_files == len(os.listdir(BOURDON_DES_ARBRES_DIR))
 
     # Load a random image from the images folder
     images = []
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(number_files+i)))
+        images[i] = skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i)))
 
     for i in range(0, number_files):
-        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(number_files+i)))
+        images[i] = skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(START_BOURDON_DES_ARBRES+i)))
 
     # Run detection
     results = model.detect(images, verbose=1)
@@ -131,4 +133,4 @@ if __name__ == '__main__':
     for i in range(0, number_files):
         r = results[i]
         visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
-                                 class_names, filename.format(number_files+i), r['scores'])
+                                 class_names, filename.format(i), r['scores'])
