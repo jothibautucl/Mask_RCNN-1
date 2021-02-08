@@ -32,10 +32,10 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-WEIGHTS_PATH = "../../logs/balloon20210205T1601/mask_rcnn_balloon_0009.h5"  # TODO: update this path
+WEIGHTS_PATH = "../../logs/balloon20210207T1903/mask_rcnn_balloon_0030.h5"  # TODO: update this path
 
 config = ip.InsectPolygonsConfig()
-INSECT_DIR = os.path.join(ROOT_DIR, "dataset_25")
+INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100")
 ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "predict/abeille_mellifere")
 BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "predict/bourdon_des_arbres")
 
@@ -113,11 +113,19 @@ if __name__ == '__main__':
 
     class_names = ['BG', 'boudon_des_arbres', 'abeille_mellifere']
     number_files = len(os.listdir(ABEILLE_MELLIFERE_DIR))
-    newstr = ''.join([n for n in os.listdir(ABEILLE_MELLIFERE_DIR)[0] if n.isdigit()])
+    filelist = os.listdir(ABEILLE_MELLIFERE_DIR)
+    filelist.sort()
+    newstr = ''.join([n for n in filelist[0] if n.isdigit()])
     START_ABEILLE_MELLIFERE = [int(i) for i in newstr.split()][-1]
-    newstr = ''.join([n for n in os.listdir(BOURDON_DES_ARBRES_DIR)[0] if n.isdigit()])
+    filelist = os.listdir(BOURDON_DES_ARBRES_DIR)
+    filelist.sort()
+    newstr = ''.join([n for n in filelist[0] if n.isdigit()])
     START_BOURDON_DES_ARBRES = [int(i) for i in newstr.split()][-1]
     assert number_files == len(os.listdir(BOURDON_DES_ARBRES_DIR))
+    
+    print("Start_bourdon_des_arbres: "+str(START_BOURDON_DES_ARBRES))
+    print("Start_abeille_mellifere: "+str(START_ABEILLE_MELLIFERE))
+    print("Number of images: "+str(number_files))
 
     # Load a random image from the images folder
     images = []
