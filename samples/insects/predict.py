@@ -103,9 +103,9 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', required=False,
                         metavar="/path/to/insects/dataset/",
                         help='Directory of the Insects dataset')
-    parser.add_argument('--weights', required=True,
+    parser.add_argument('--weights', required=False,
                         metavar="/path/to/weights.h5",
-                        help="Path to weights .h5 file or 'coco'")
+                        help="Path to weights .h5 file, 'coco', 'last' or nothing (which will be interpreted as 'last')")
     args = parser.parse_args()
 
     if args.dataset is not None:
