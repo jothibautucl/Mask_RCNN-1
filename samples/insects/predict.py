@@ -108,7 +108,8 @@ if __name__ == '__main__':
                         help="Path to weights .h5 file or 'coco'")
     args = parser.parse_args()
 
-    INSECT_DIR = args.dataset
+    if args.dataset is not None:
+        INSECT_DIR = args.dataset
     if args.weights != "last":
         WEIGHTS_PATH = args.weights
     else:
