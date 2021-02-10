@@ -102,7 +102,7 @@ if __name__ == '__main__':
         model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR,
                                   config=config)
 
-    weights_path = WEIGHTS_PATH
+    weights_path = model.find_last()
 
     # Load weights
     print("Loading weights ", weights_path)
