@@ -110,10 +110,11 @@ if __name__ == '__main__':
 
     if args.dataset is not None:
         INSECT_DIR = args.dataset
-    if args.weights is None or args.weights is "last":
-        WEIGHTS_PATH = args.weights
-    else:
+    if args.weights is None or args.weights == "last":
+        print("Finding last weights")
         WEIGHTS_PATH = model.find_last()
+    else:
+        WEIGHTS_PATH = args.weights
 
     print("Weights: ", WEIGHTS_PATH)
     print("Dataset: ", INSECT_DIR)
