@@ -136,12 +136,12 @@ class InsectPolygonsDataset(utils.Dataset):
         annotations_bourdon_des_jardins = [a for a in annotations_bourdon_des_jardins if a['regions']]
 
         # Add images
-        self.add_image(annotations_abeille_mellifere, dataset_dir_abeille_mellifere, class_id_abeille_mellifere)
-        self.add_image(annotations_bourdon_des_arbres, dataset_dir_bourdon_des_arbres, class_id_bourdon_des_arbres)
-        self.add_image(annotations_anthophore_plumeuse, dataset_dir_anthophore_plumeuse, class_id_anthophore_plumeuse)
-        self.add_image(annotations_bourdon_des_jardins, dataset_dir_bourdon_des_jardins, class_id_bourdon_des_jardins)
+        self.add_images_from_class(annotations_abeille_mellifere, dataset_dir_abeille_mellifere, class_id_abeille_mellifere)
+        self.add_images_from_class(annotations_bourdon_des_arbres, dataset_dir_bourdon_des_arbres, class_id_bourdon_des_arbres)
+        self.add_images_from_class(annotations_anthophore_plumeuse, dataset_dir_anthophore_plumeuse, class_id_anthophore_plumeuse)
+        self.add_images_from_class(annotations_bourdon_des_jardins, dataset_dir_bourdon_des_jardins, class_id_bourdon_des_jardins)
 
-    def add_images(self, annotations, dataset_dir, class_id):
+    def add_images_from_class(self, annotations, dataset_dir, class_id):
         for a in annotations:
             # Get the x, y coordinaets of points of the polygons that make up
             # the outline of each object instance. These are stores in the
