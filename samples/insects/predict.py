@@ -79,6 +79,7 @@ def get_images_of_dataset(dataset_dir):
     files = os.listdir(dataset_dir)
     images_of_dataset = []
     for file in files:
+        print(os.path.join(dataset_dir, file))
         images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
     return images_of_dataset
 
