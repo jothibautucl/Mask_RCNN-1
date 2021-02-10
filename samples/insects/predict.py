@@ -141,10 +141,10 @@ if __name__ == '__main__':
     result_matrix = np.zeros((len(class_names)-1, len(class_names)-1))
     for j in range(1, len(class_names)):
         images = images_per_class[j]
+        results = model.detect(images, verbose=1)
         filename = 'test{:04}.jpg'
         for i in range(0, len(images)):
-            results = model.detect([images[i]], verbose=1)
-            r = results[0]
+            r = results[i]
             class_ids = r['class_ids']
             for class_id in class_ids:
                 result_matrix[j-1][class_id] += 1
