@@ -1,0 +1,2 @@
+Move files from subfolders into parent folder
+	find . -mindepth 2 -type f -print -exec mv {} . \;
