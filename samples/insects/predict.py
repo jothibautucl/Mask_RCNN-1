@@ -38,6 +38,8 @@ config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100")
 ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "predict/abeille_mellifere")
 BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "predict/bourdon_des_arbres")
+ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "predict.py/anthophore_plumeuse")
+BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "predict.py/bourdon_des_jardins")
 
 
 # changes for inferencing.
@@ -71,6 +73,14 @@ def get_ax(rows=1, cols=1, size=16):
     """
     _, ax = plt.subplots(rows, cols, figsize=(size * cols, size * rows))
     return ax
+
+
+def get_images_of_dataset(dataset_dir):
+    files = os.listdir(dataset_dir)
+    images_of_dataset = []
+    for file in files:
+        images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
+    return images_of_dataset
 
 
 if __name__ == '__main__':
@@ -111,29 +121,17 @@ if __name__ == '__main__':
     #                             dataset.class_names, r1['scores'], ax=ax,
     #                             title="Predictions1")
 
-    class_names = ['BG', 'boudon_des_arbres', 'abeille_mellifere']
-    number_files = len(os.listdir(ABEILLE_MELLIFERE_DIR))
-    filelist = os.listdir(ABEILLE_MELLIFERE_DIR)
-    filelist.sort()
-    newstr = ''.join([n for n in filelist[0] if n.isdigit()])
-    START_ABEILLE_MELLIFERE = [int(i) for i in newstr.split()][-1]
-    filelist = os.listdir(BOURDON_DES_ARBRES_DIR)
-    filelist.sort()
-    newstr = ''.join([n for n in filelist[0] if n.isdigit()])
-    START_BOURDON_DES_ARBRES = [int(i) for i in newstr.split()][-1]
-    assert number_files == len(os.listdir(BOURDON_DES_ARBRES_DIR))
-    
-    print("Start_bourdon_des_arbres: "+str(START_BOURDON_DES_ARBRES))
-    print("Start_abeille_mellifere: "+str(START_ABEILLE_MELLIFERE))
-    print("Number of images: "+str(number_files))
+    class_names = ['BG', 'abeille_mellifere', 'boudon_des_arbres', 'anthophore_plumeuse', 'bourdon_des_jardins']
+    class_id_abeille_mellifere = 1
+    class_id_bourdon_des_arbres = 2
+    class_id_anthophore_plumeuse = 3
+    class_id_bourdon_des_jardins = 4
 
     # Load a random image from the images folder
-    images = []
-    for i in range(0, number_files):
-        images.insert(len(images)-1, skimage.io.imread(os.path.join(ABEILLE_MELLIFERE_DIR, 'abeille_mellifere{:04}.jpg'.format(START_ABEILLE_MELLIFERE+i))))
-
-    for i in range(0, number_files):
-        images.insert(len(images)-1, skimage.io.imread(os.path.join(BOURDON_DES_ARBRES_DIR, 'bourdon_des_arbres{:04}.jpg'.format(START_BOURDON_DES_ARBRES+i))))
+    images_per_class = {class_id_abeille_mellifere: get_images_of_dataset(ABEILLE_MELLIFERE_DIR),
+                        class_id_bourdon_des_arbres: get_images_of_dataset(BOURDON_DES_ARBRES_DIR),
+                        class_id_anthophore_plumeuse: get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR),
+                        class_id_bourdon_des_jardins: get_images_of_dataset(BOURDON_DES_JARDINS_DIR)}
 
     # Run detection
     # Visualize results
