@@ -32,7 +32,7 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-WEIGHTS_PATH = "../../logs/balloon20210207T1903/mask_rcnn_balloon_0030.h5"  # TODO: update this path
+WEIGHTS_PATH = "../../logs/balloon20210207T1903/mask_rcnn_balloon_0030.h5"
 
 config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100")
@@ -89,42 +89,39 @@ def class_accuracy(vec, class_id):
     return vec[class_id]/np.sum(vec)
 
 if __name__ == '__main__':
-    # Load validation dataset
-    # dataset = ip.InsectPolygonsDataset()
-    # dataset.load_insect(INSECT_DIR, "predict")
-    #
-    # # Must call before using the dataset
-    # dataset.prepare()
-    #
-    # print("Images: {}\nClasses: {}".format(len(dataset.image_ids), dataset.class_names))
-    #
+    
     with tf.device(DEVICE):
         model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR,
                                   config=config)
 
-    weights_path = WEIGHTS_PATH
-
     # Load weights
-    print("Loading weights ", weights_path)
-    model.load_weights(weights_path, by_name=True)
+    import argparse
+
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Use Mask R-CNN to detect insects.')
+    parser.add_argument('--dataset', required=False,
+                        metavar="/path/to/insects/dataset/",
+                        help='Directory of the Insects dataset')
+    parser.add_argument('--weights', required=True,
+                        metavar="/path/to/weights.h5",
+                        help="Path to weights .h5 file or 'coco'")
+    args = parser.parse_args()
+
+    INSECT_DIR = args.dataset
+    if args.weights != "last":
+        WEIGHTS_PATH = args.weights
+    else:
+        WEIGHTS_PATH = model.find_last()
+
+    print("Weights: ", WEIGHTS_PATH)
+    print("Dataset: ", INSECT_DIR)
+
+    model.load_weights(WEIGHTS_PATH, by_name=True)
 
     '''
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
     '''
-    #
-    # import matplotlib.image as mpimg
-    #
-    # image1 = mpimg.imread('/home/jonathan/Desktop/Master_Thesis/Mask_RCNN-1/dataset_25/val/bourdon_des_arbres/bourdon_des_arbres0025.jpg')
-    # # Run object detection
-    # print(len([image1]))
-    # results1 = model.detect([image1], verbose=1)
-    #
-    # # Display results
-    # ax = get_ax(1)
-    # r1 = results1[0]
-    # visualize.display_instances(image1, r1['rois'], r1['masks'], r1['class_ids'],
-    #                             dataset.class_names, r1['scores'], ax=ax,
-    #                             title="Predictions1")
 
     class_names = ['BG', 'abeille_mellifere', 'boudon_des_arbres', 'anthophore_plumeuse', 'bourdon_des_jardins']
     class_id_abeille_mellifere = 1
