@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
     if args.dataset is not None:
         INSECT_DIR = args.dataset
-    if args.weights != "last":
+    if args.weights is None or args.weights is "last":
         WEIGHTS_PATH = args.weights
     else:
         WEIGHTS_PATH = model.find_last()
