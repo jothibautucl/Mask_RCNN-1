@@ -82,6 +82,11 @@ def get_images_of_dataset(dataset_dir):
         images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
     return images_of_dataset
 
+def accuracy(mat):
+    return np.trace(mat)/np.sum(mat)
+
+def class_accuracy(vec, class_id):
+    return vec[class_id]/np.sum(vec)
 
 if __name__ == '__main__':
     # Load validation dataset
@@ -133,11 +138,22 @@ if __name__ == '__main__':
                         class_id_anthophore_plumeuse: get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR),
                         class_id_bourdon_des_jardins: get_images_of_dataset(BOURDON_DES_JARDINS_DIR)}
 
-    # Run detection
-    # Visualize results
-    filename = 'test{:04}.jpg'
-    for i in range(0, len(images)):
-        results = model.detect([images[i]], verbose=1)
-        r = results[0]
-        visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
-                                 class_names, filename.format(i), r['scores'])
+
+    result_matrix = np.zeros((len(class_names)-1, len(class_names)-1))
+    for j in range(1, len(class_names)):
+        images = images_per_class[j]
+        filename = 'test{:04}.jpg'
+        for i in range(0, len(images)):
+            results = model.detect([images[i]], verbose=1)
+            r = results[0]
+            class_ids = r['class_ids']
+            for class_id in class_ids:
+                result_matrix[j-1][class_id] += 1
+            visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
+                                     class_names, filename.format(i), r['scores'])
+
+    print("General accuracy : " + str(accuracy(result_matrix)))
+    for j in range(1, len(class_names)):
+        class_name = class_names[j]
+        acc = class_accuracy(result_matrix[j-1], j-1)
+        print("Accuracy of class '" + class_name + "' : " + str(acc))
