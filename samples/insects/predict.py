@@ -38,8 +38,8 @@ config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100")
 ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "predict/abeille_mellifere")
 BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "predict/bourdon_des_arbres")
-ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "predict.py/anthophore_plumeuse")
-BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "predict.py/bourdon_des_jardins")
+ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "predict/anthophore_plumeuse")
+BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "predict/bourdon_des_jardins")
 
 
 # changes for inferencing.
