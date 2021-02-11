@@ -148,7 +148,7 @@ if __name__ == '__main__':
             r = results[0]
             class_ids = r['class_ids']
             for class_id in class_ids:
-                result_matrix[j-1][class_id] += 1
+                result_matrix[j-1][class_id-1] += 1
             visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
                                      class_names, filename.format(j, i), r['scores'])
 
