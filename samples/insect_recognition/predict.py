@@ -32,7 +32,7 @@ MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 # Path to Ballon trained weights
 # You can download this file from the Releases page
 # https://github.com/matterport/Mask_RCNN/releases
-WEIGHTS_PATH = "../../logs/" # TODO: add default
+WEIGHTS_PATH = "../../logs/"  # TODO: add default
 
 config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100")
@@ -83,14 +83,17 @@ def get_images_of_dataset(dataset_dir):
         images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
     return images_of_dataset
 
+
 def accuracy(mat):
-    return np.trace(mat)/np.sum(mat)
+    return np.trace(mat) / np.sum(mat)
+
 
 def class_accuracy(vec, class_id):
-    return vec[class_id]/np.sum(vec)
+    return vec[class_id] / np.sum(vec)
+
 
 if __name__ == '__main__':
-    
+
     with tf.device(DEVICE):
         model = modellib.MaskRCNN(mode="inference", model_dir=MODEL_DIR,
                                   config=config)
@@ -126,20 +129,16 @@ if __name__ == '__main__':
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
     '''
 
-    class_names = ['BG', 'abeille_mellifere', 'boudon_des_arbres', 'anthophore_plumeuse', 'bourdon_des_jardins']
-    class_id_abeille_mellifere = 1
-    class_id_bourdon_des_arbres = 2
-    class_id_anthophore_plumeuse = 3
-    class_id_bourdon_des_jardins = 4
+    class_names = ['BG', 'insect']
+    class_id_insect = 1
 
     # Load a random image from the images folder
-    images_per_class = {class_id_abeille_mellifere: get_images_of_dataset(ABEILLE_MELLIFERE_DIR),
-                        class_id_bourdon_des_arbres: get_images_of_dataset(BOURDON_DES_ARBRES_DIR),
-                        class_id_anthophore_plumeuse: get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR),
-                        class_id_bourdon_des_jardins: get_images_of_dataset(BOURDON_DES_JARDINS_DIR)}
+    images_per_class = {class_id_insect: get_images_of_dataset(ABEILLE_MELLIFERE_DIR)
+                                         + get_images_of_dataset(BOURDON_DES_ARBRES_DIR)
+                                         + get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR)
+                                         + get_images_of_dataset(BOURDON_DES_JARDINS_DIR)}
 
-
-    result_matrix = np.zeros((len(class_names)-1, len(class_names)-1))
+    result_matrix = np.zeros((len(class_names) - 1, len(class_names) - 1))
     filename = 'test{:01}-{:04}.jpg'
     for j in range(1, len(class_names)):
         images = images_per_class[j]
@@ -148,12 +147,12 @@ if __name__ == '__main__':
             r = results[0]
             class_ids = r['class_ids']
             for class_id in class_ids:
-                result_matrix[j-1][class_id-1] += 1
+                result_matrix[j - 1][class_id - 1] += 1
             visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
                                      class_names, filename.format(j, i), r['scores'])
 
     print("General accuracy : " + str(accuracy(result_matrix)))
     for j in range(1, len(class_names)):
         class_name = class_names[j]
-        acc = class_accuracy(result_matrix[j-1], j-1)
+        acc = class_accuracy(result_matrix[j - 1], j - 1)
         print("Accuracy of class '" + class_name + "' : " + str(acc))
