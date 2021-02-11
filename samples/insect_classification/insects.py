@@ -62,7 +62,7 @@ class InsectPolygonsConfig(Config):
     Derives from the base Config class and overrides some values.
     """
     # Give the configuration a recognizable name
-    NAME = "insects"
+    NAME = "insect_classification"
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
