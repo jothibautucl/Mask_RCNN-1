@@ -70,7 +70,7 @@ def get_images_of_dataset(dataset_dir):
     filenames_of_dataset = []
     for file in files:
         ext = os.path.splitext(file)[-1].lower()
-        if ext == "jpg" or ext == "png" or ext == "jpeg":
+        if ext == ".jpg" or ext == ".png" or ext == ".jpeg":
             # print(os.path.join(dataset_dir, file))
             filenames_of_dataset.append(file)
             images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
