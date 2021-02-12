@@ -91,6 +91,9 @@ if __name__ == '__main__':
     parser.add_argument('--weights', required=False,
                         metavar="/path/to/weights.h5",
                         help="Path to weights .h5 file, 'coco', 'last' or nothing (which will be interpreted as 'last')")
+    parser.add_argument('--output', required=False,
+                        metavar="output_file.txt",
+                        help="Path to and name of the output file")
     args = parser.parse_args()
 
     if args.dataset is not None:
@@ -100,6 +103,11 @@ if __name__ == '__main__':
         WEIGHTS_PATH = model.find_last()
     else:
         WEIGHTS_PATH = args.weights
+
+    if args.output is None:
+        OUTPUT_FILENAME = "bbox.txt"
+    else:
+        OUTPUT_FILENAME = args.output
 
     ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "abeille_mellifere")
     BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "bourdon_des_arbres")
@@ -136,7 +144,7 @@ if __name__ == '__main__':
                            class_id_anthophore_plumeuse: filenames_anthophore_plumeuse,
                            class_id_bourdon_des_jardins: filenames_bourdon_des_jardins}
 
-    with open('bbox.txt', 'a') as file:
+    with open(OUTPUT_FILENAME, 'a') as file:
         for j in range(1, len(class_names)):
             images = images_per_class[j]
             filenames = filenames_per_class[j]
