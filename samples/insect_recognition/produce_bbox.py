@@ -142,9 +142,6 @@ if __name__ == '__main__':
             for i in range(0, len(images)):
                 results = model.detect([images[i]], verbose=1)
                 r = results[0]
-                for k in range(r['rois'][0]):
+                for k in range(len(r['rois'])):
                     (y1, x1, y2, x2) = r['rois'][k]
-                    output = [filenames[i], x1, y1, x2, y2, class_names[j]]
-                    for l in range(len(output)):
-                        file.write(output[l])
-                    file.write('\n')
+                    file.write(str(filenames[i])+","+ str(x1)+","+ str(y1)+","+ str(x2)+","+ str(y2)+","+ str(class_names[j])+"\n")
