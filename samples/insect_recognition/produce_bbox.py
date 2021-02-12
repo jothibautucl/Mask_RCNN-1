@@ -36,10 +36,6 @@ WEIGHTS_PATH = "../../logs/"  # TODO: add default
 
 config = ip.InsectPolygonsConfig()
 INSECT_DIR = os.path.join(ROOT_DIR, "dataset_100/predict")
-ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "abeille_mellifere")
-BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "bourdon_des_arbres")
-ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "anthophore_plumeuse")
-BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "bourdon_des_jardins")
 
 
 # changes for inferencing.
@@ -104,6 +100,11 @@ if __name__ == '__main__':
         WEIGHTS_PATH = model.find_last()
     else:
         WEIGHTS_PATH = args.weights
+
+    ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "abeille_mellifere")
+    BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "bourdon_des_arbres")
+    ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "anthophore_plumeuse")
+    BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "bourdon_des_jardins")
 
     print("Weights: ", WEIGHTS_PATH)
     print("Dataset: ", INSECT_DIR)
