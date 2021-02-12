@@ -63,21 +63,16 @@ DEVICE = "/gpu:0"  # /cpu:0 or /gpu:0
 # TODO: code for 'training' test mode not ready yet
 TEST_MODE = "inference"
 
+
 def get_images_of_dataset(dataset_dir):
     files = os.listdir(dataset_dir)
     images_of_dataset = []
+    filenames_of_dataset = []
     for file in files:
-        print(os.path.join(dataset_dir, file))
+        # print(os.path.join(dataset_dir, file))
+        filenames_of_dataset.append(os.path.join(dataset_dir, file))
         images_of_dataset.append(skimage.io.imread(os.path.join(dataset_dir, file)))
-    return images_of_dataset
-
-
-def accuracy(mat):
-    return np.trace(mat) / np.sum(mat)
-
-
-def class_accuracy(vec, class_id):
-    return vec[class_id] / np.sum(vec)
+    return images_of_dataset, filenames_of_dataset
 
 
 if __name__ == '__main__':
@@ -117,30 +112,37 @@ if __name__ == '__main__':
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
     '''
 
-    class_names = ['BG', 'insect']
-    class_id_insect = 1
+    class_names = ['BG', 'abeille_mellifere', 'boudon_des_arbres', 'anthophore_plumeuse', 'bourdon_des_jardins']
+    class_id_abeille_mellifere = 1
+    class_id_bourdon_des_arbres = 2
+    class_id_anthophore_plumeuse = 3
+    class_id_bourdon_des_jardins = 4
 
     # Load a random image from the images folder
-    images_per_class = {class_id_insect: get_images_of_dataset(ABEILLE_MELLIFERE_DIR)
-                                         + get_images_of_dataset(BOURDON_DES_ARBRES_DIR)
-                                         + get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR)
-                                         + get_images_of_dataset(BOURDON_DES_JARDINS_DIR)}
+    images_abeille_mellifere, filenames_abeille_mellifere = get_images_of_dataset(ABEILLE_MELLIFERE_DIR)
+    images_bourdon_des_arbres, filenames_bourdon_des_arbres = get_images_of_dataset(BOURDON_DES_ARBRES_DIR)
+    images_anthophore_plumeuse, filenames_anthophore_plumeuse = get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR)
+    images_bourdon_des_jardins, filenames_bourdon_des_jardins = get_images_of_dataset(BOURDON_DES_JARDINS_DIR)
 
-    result_matrix = np.zeros((len(class_names) - 1, len(class_names) - 1))
-    filename = 'test{:01}-{:04}.jpg'
-    for j in range(1, len(class_names)):
-        images = images_per_class[j]
-        for i in range(0, len(images)):
-            results = model.detect([images[i]], verbose=1)
-            r = results[0]
-            class_ids = r['class_ids']
-            for class_id in class_ids:
-                result_matrix[j - 1][class_id - 1] += 1
-            visualize.save_instances(images[i], r['rois'], r['masks'], r['class_ids'],
-                                     class_names, filename.format(j, i), r['scores'])
+    images_per_class = {class_id_abeille_mellifere: images_abeille_mellifere,
+                        class_id_bourdon_des_arbres: images_bourdon_des_arbres,
+                        class_id_anthophore_plumeuse: images_anthophore_plumeuse,
+                        class_id_bourdon_des_jardins: images_bourdon_des_jardins}
+    filenames_per_class = {class_id_abeille_mellifere: filenames_abeille_mellifere,
+                           class_id_bourdon_des_arbres: filenames_bourdon_des_arbres,
+                           class_id_anthophore_plumeuse: filenames_anthophore_plumeuse,
+                           class_id_bourdon_des_jardins: filenames_bourdon_des_jardins}
 
-    print("General accuracy : " + str(accuracy(result_matrix)))
-    for j in range(1, len(class_names)):
-        class_name = class_names[j]
-        acc = class_accuracy(result_matrix[j - 1], j - 1)
-        print("Accuracy of class '" + class_name + "' : " + str(acc))
+    with open('bbox.txt', 'a') as file:
+        for j in range(1, len(class_names)):
+            images = images_per_class[j]
+            filenames = filenames_per_class[j]
+            for i in range(0, len(images)):
+                results = model.detect([images[i]], verbose=1)
+                r = results[0]
+                for k in range(r['rois'][0]):
+                    (y1, x1, y2, x2) = r['rois'][k]
+                    output = [filenames[i], x1, y1, x2, y2, class_names[j]]
+                    for l in range(len(output)):
+                        file.write(output[l])
+                    file.write('\n')
