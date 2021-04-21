@@ -109,10 +109,12 @@ if __name__ == '__main__':
     else:
         OUTPUT_FILENAME = args.output
 
-    ABEILLE_MELLIFERE_DIR = os.path.join(INSECT_DIR, "abeille_mellifere")
-    BOURDON_DES_ARBRES_DIR = os.path.join(INSECT_DIR, "bourdon_des_arbres")
-    ANTHOPHORE_PLUMEUSE_DIR = os.path.join(INSECT_DIR, "anthophore_plumeuse")
-    BOURDON_DES_JARDINS_DIR = os.path.join(INSECT_DIR, "bourdon_des_jardins")
+    BOMBUS_LAPIDARIUS_DIR = os.path.join(INSECT_DIR, "bombus_lapidarius")
+    BOMBUS_LUCORUM_DIR = os.path.join(INSECT_DIR, "bombus_lucorum")
+    BOMBUS_PASCUORUM_DIR = os.path.join(INSECT_DIR, "bombus_pascuorum")
+    BOMBUS_PRATORUM_DIR = os.path.join(INSECT_DIR, "bombus_pratorum")
+    BOMBUS_TERRESTRIS_DIR = os.path.join(INSECT_DIR, "bombus_terrestris")
+    VESPA_CRABRO_DIR = os.path.join(INSECT_DIR, "vespa_crabro")
 
     print("Weights: ", WEIGHTS_PATH)
     print("Dataset: ", INSECT_DIR)
@@ -123,26 +125,34 @@ if __name__ == '__main__':
         Make inference on the validation set, use the below code, which picks up an image randomly from validation and run the detection.
     '''
 
-    class_names = ['BG', 'abeille_mellifere', 'boudon_des_arbres', 'anthophore_plumeuse', 'bourdon_des_jardins']
-    class_id_abeille_mellifere = 1
-    class_id_bourdon_des_arbres = 2
-    class_id_anthophore_plumeuse = 3
-    class_id_bourdon_des_jardins = 4
+    class_names = ['BG', 'bombus_lapidarius', 'bombus_lucorum', 'bombus_pascuorum', 'bombus_pratorum', 'bombus_terrestris', 'vespa_crabro']
+    class_id_bombus_lapidarius = 1
+    class_id_bombus_lucorum = 2
+    class_id_bombus_pascuorum = 3
+    class_id_bombus_pratorum = 4
+    class_id_bombus_terrestris = 5
+    class_id_vespa_crabro = 6
 
     # Load a random image from the images folder
-    images_abeille_mellifere, filenames_abeille_mellifere = get_images_of_dataset(ABEILLE_MELLIFERE_DIR)
-    images_bourdon_des_arbres, filenames_bourdon_des_arbres = get_images_of_dataset(BOURDON_DES_ARBRES_DIR)
-    images_anthophore_plumeuse, filenames_anthophore_plumeuse = get_images_of_dataset(ANTHOPHORE_PLUMEUSE_DIR)
-    images_bourdon_des_jardins, filenames_bourdon_des_jardins = get_images_of_dataset(BOURDON_DES_JARDINS_DIR)
+    images_bombus_lapidarius, filenames_bombus_lapidarius = get_images_of_dataset(BOMBUS_LAPIDARIUS_DIR)
+    images_bombus_lucorum, filenames_bombus_lucorum = get_images_of_dataset(BOMBUS_LUCORUM_DIR)
+    images_bombus_pascuorum, filenames_bombus_pascuorum = get_images_of_dataset(BOMBUS_PASCUORUM_DIR)
+    images_bombus_pratorum, filenames_bombus_pratorum = get_images_of_dataset(BOMBUS_PRATORUM_DIR)
+    images_bombus_terrestris, filenames_bombus_terrestris = get_images_of_dataset(BOMBUS_TERRESTRIS_DIR)
+    images_vespa_crabro, filenames_vespa_crabro = get_images_of_dataset(VESPA_CRABRO_DIR)
 
-    images_per_class = {class_id_abeille_mellifere: images_abeille_mellifere,
-                        class_id_bourdon_des_arbres: images_bourdon_des_arbres,
-                        class_id_anthophore_plumeuse: images_anthophore_plumeuse,
-                        class_id_bourdon_des_jardins: images_bourdon_des_jardins}
-    filenames_per_class = {class_id_abeille_mellifere: filenames_abeille_mellifere,
-                           class_id_bourdon_des_arbres: filenames_bourdon_des_arbres,
-                           class_id_anthophore_plumeuse: filenames_anthophore_plumeuse,
-                           class_id_bourdon_des_jardins: filenames_bourdon_des_jardins}
+    images_per_class = {class_id_bombus_lapidarius: images_bombus_lapidarius,
+                        class_id_bombus_lucorum: images_bombus_lucorum,
+                        class_id_bombus_pascuorum: images_bombus_pascuorum,
+                        class_id_bombus_pratorum: images_bombus_pratorum,
+                        class_id_bombus_terrestris: images_bombus_terrestris,
+                        class_id_vespa_crabro: images_vespa_crabro}
+    filenames_per_class = {class_id_bombus_lapidarius: filenames_bombus_lapidarius,
+                           class_id_bombus_lucorum: filenames_bombus_lucorum,
+                           class_id_bombus_pascuorum: filenames_bombus_pascuorum,
+                           class_id_bombus_pratorum: filenames_bombus_pratorum,
+                           class_id_bombus_terrestris: filenames_bombus_terrestris,
+                           class_id_vespa_crabro: filenames_vespa_crabro}
 
     with open(OUTPUT_FILENAME, 'a') as file:
         for j in range(1, len(class_names)):
