@@ -127,40 +127,40 @@ if __name__ == '__main__':
     '''
 
     #class_names = ['BG', 'bombus_lapidarius', 'bombus_lucorum', 'bombus_pascuorum']#, 'bombus_pratorum', 'bombus_terrestris', 'vespa_crabro']
-    class_names = ['BG', 'bombus_pratorum', 'bombus_terrestris', 'vespa_crabro']
+    class_names = ['BG', 'bombus_pascuorum', 'vespa_crabro']
     #class_id_bombus_lapidarius = 1
     #class_id_bombus_lucorum = 2
-    #class_id_bombus_pascuorum = 3
-    class_id_bombus_pratorum = 1
-    class_id_bombus_terrestris = 2
-    class_id_vespa_crabro = 3
+    class_id_bombus_pascuorum = 1
+    #class_id_bombus_pratorum = 1
+    #class_id_bombus_terrestris = 2
+    class_id_vespa_crabro = 2
 
     # Load a random image from the images folder
     #images_bombus_lapidarius, filenames_bombus_lapidarius = get_images_of_dataset(BOMBUS_LAPIDARIUS_DIR)
     #images_bombus_lucorum, filenames_bombus_lucorum = get_images_of_dataset(BOMBUS_LUCORUM_DIR)
-    #images_bombus_pascuorum, filenames_bombus_pascuorum = get_images_of_dataset(BOMBUS_PASCUORUM_DIR)
-    images_bombus_pratorum, filenames_bombus_pratorum = get_images_of_dataset(BOMBUS_PRATORUM_DIR)
-    images_bombus_terrestris, filenames_bombus_terrestris = get_images_of_dataset(BOMBUS_TERRESTRIS_DIR)
+    images_bombus_pascuorum, filenames_bombus_pascuorum = get_images_of_dataset(BOMBUS_PASCUORUM_DIR)
+    #images_bombus_pratorum, filenames_bombus_pratorum = get_images_of_dataset(BOMBUS_PRATORUM_DIR)
+    #images_bombus_terrestris, filenames_bombus_terrestris = get_images_of_dataset(BOMBUS_TERRESTRIS_DIR)
     images_vespa_crabro, filenames_vespa_crabro = get_images_of_dataset(VESPA_CRABRO_DIR)
 
     images_per_class = {
                         #class_id_bombus_lapidarius: images_bombus_lapidarius,
                         #class_id_bombus_lucorum: images_bombus_lucorum,
-                        #class_id_bombus_pascuorum: images_bombus_pascuorum
-                        class_id_bombus_pratorum: images_bombus_pratorum,
-                        class_id_bombus_terrestris: images_bombus_terrestris,
+                        class_id_bombus_pascuorum: images_bombus_pascuorum,
+                        #class_id_bombus_pratorum: images_bombus_pratorum,
+                        #class_id_bombus_terrestris: images_bombus_terrestris,
                         class_id_vespa_crabro: images_vespa_crabro
                         }
     filenames_per_class = {
                            #class_id_bombus_lapidarius: filenames_bombus_lapidarius,
                            #class_id_bombus_lucorum: filenames_bombus_lucorum,
-                           #class_id_bombus_pascuorum: filenames_bombus_pascuorum
-                           class_id_bombus_pratorum: filenames_bombus_pratorum,
-                           class_id_bombus_terrestris: filenames_bombus_terrestris,
+                           class_id_bombus_pascuorum: filenames_bombus_pascuorum,
+                           #class_id_bombus_pratorum: filenames_bombus_pratorum,
+                           #class_id_bombus_terrestris: filenames_bombus_terrestris,
                            class_id_vespa_crabro: filenames_vespa_crabro
                            }
 
-    compute = False
+    compute = True
 
     with open(OUTPUT_FILENAME, 'a') as file:
         for j in range(1, len(class_names)):
