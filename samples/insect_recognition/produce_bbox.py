@@ -115,7 +115,7 @@ if __name__ == '__main__':
     BOMBUS_PASCUORUM_DIR = os.path.join(INSECT_DIR, "bombus_pascuorum")
     BOMBUS_PRATORUM_DIR = os.path.join(INSECT_DIR, "bombus_pratorum")
     BOMBUS_TERRESTRIS_DIR = os.path.join(INSECT_DIR, "bombus_terrestris")
-    VESPA_CRABRO_DIR = os.path.join(INSECT_DIR, "vespa_crabro")
+    VESPA_CRABRO_DIR = os.path.join(INSECT_DIR, "vespula_vulgaris")
 
     print("Weights: ", WEIGHTS_PATH)
     print("Dataset: ", INSECT_DIR)
@@ -127,37 +127,41 @@ if __name__ == '__main__':
     '''
 
     #class_names = ['BG', 'bombus_lapidarius', 'bombus_lucorum', 'bombus_pascuorum']#, 'bombus_pratorum', 'bombus_terrestris', 'vespa_crabro']
-    class_names = ['BG', 'bombus_pascuorum', 'vespa_crabro']
+    class_names = ['BG', 'bombus_terrestris', 'vespula_vulgaris', 'apis_mellifera']
     #class_id_bombus_lapidarius = 1
     #class_id_bombus_lucorum = 2
-    class_id_bombus_pascuorum = 1
+    #class_id_bombus_pascuorum = 1
     #class_id_bombus_pratorum = 1
-    #class_id_bombus_terrestris = 2
-    class_id_vespa_crabro = 2
+    class_id_bombus_terrestris = 1
+    class_id_vespula_vulgaris = 2
+    class_id_apis_mellifera = 3
 
     # Load a random image from the images folder
     #images_bombus_lapidarius, filenames_bombus_lapidarius = get_images_of_dataset(BOMBUS_LAPIDARIUS_DIR)
     #images_bombus_lucorum, filenames_bombus_lucorum = get_images_of_dataset(BOMBUS_LUCORUM_DIR)
-    images_bombus_pascuorum, filenames_bombus_pascuorum = get_images_of_dataset(BOMBUS_PASCUORUM_DIR)
+    #images_bombus_pascuorum, filenames_bombus_pascuorum = get_images_of_dataset(BOMBUS_PASCUORUM_DIR)
     #images_bombus_pratorum, filenames_bombus_pratorum = get_images_of_dataset(BOMBUS_PRATORUM_DIR)
-    #images_bombus_terrestris, filenames_bombus_terrestris = get_images_of_dataset(BOMBUS_TERRESTRIS_DIR)
-    images_vespa_crabro, filenames_vespa_crabro = get_images_of_dataset(VESPA_CRABRO_DIR)
+    images_bombus_terrestris, filenames_bombus_terrestris = get_images_of_dataset(BOMBUS_TERRESTRIS_DIR)
+    images_vespula_vulgaris, filenames_vespula_vulgaris = get_images_of_dataset(VESPA_CRABRO_DIR)
+    images_apis_mellifera, filenames_apis_mellifera = get_images_of_dataset(APIS_MELLIFERA_DIR)
 
     images_per_class = {
                         #class_id_bombus_lapidarius: images_bombus_lapidarius,
                         #class_id_bombus_lucorum: images_bombus_lucorum,
-                        class_id_bombus_pascuorum: images_bombus_pascuorum,
+                        #class_id_bombus_pascuorum: images_bombus_pascuorum,
                         #class_id_bombus_pratorum: images_bombus_pratorum,
-                        #class_id_bombus_terrestris: images_bombus_terrestris,
-                        class_id_vespa_crabro: images_vespa_crabro
+                        class_id_bombus_terrestris: images_bombus_terrestris,
+                        class_id_vespula_vulgaris: images_vespula_vulgaris,
+                        class_id_apis_mellifera: images_apis_mellifera
                         }
     filenames_per_class = {
                            #class_id_bombus_lapidarius: filenames_bombus_lapidarius,
                            #class_id_bombus_lucorum: filenames_bombus_lucorum,
-                           class_id_bombus_pascuorum: filenames_bombus_pascuorum,
+                           #class_id_bombus_pascuorum: filenames_bombus_pascuorum,
                            #class_id_bombus_pratorum: filenames_bombus_pratorum,
-                           #class_id_bombus_terrestris: filenames_bombus_terrestris,
-                           class_id_vespa_crabro: filenames_vespa_crabro
+                           class_id_bombus_terrestris: filenames_bombus_terrestris,
+                           class_id_vespula_vulgaris: filenames_vespula_vulgaris,
+                           class_id_apis_mellifera: filenames_apis_mellifera
                            }
 
     compute = True
