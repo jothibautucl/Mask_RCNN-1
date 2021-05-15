@@ -116,6 +116,7 @@ if __name__ == '__main__':
     BOMBUS_PRATORUM_DIR = os.path.join(INSECT_DIR, "bombus_pratorum")
     BOMBUS_TERRESTRIS_DIR = os.path.join(INSECT_DIR, "bombus_terrestris")
     VESPA_CRABRO_DIR = os.path.join(INSECT_DIR, "vespula_vulgaris")
+    APIS_MELLIFERA_DIR = os.path.join(INSECT_DIR, "apis_mellifera")
 
     print("Weights: ", WEIGHTS_PATH)
     print("Dataset: ", INSECT_DIR)
